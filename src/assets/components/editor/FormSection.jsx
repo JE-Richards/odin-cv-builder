@@ -1,3 +1,5 @@
+import './styles/FormSection.css';
+
 export default function FormSection(props) {
   const { title, description, form } = props;
 

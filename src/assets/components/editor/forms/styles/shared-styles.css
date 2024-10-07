@@ -1,0 +1,79 @@
+.form {
+  background-color: var(--form-background-col);
+  border-radius: 1em;
+  padding: 1em;
+  border: 1px solid var(--form-border-col);
+}
+
+.form__label,
+.form__input {
+  display: block;
+}
+
+.form__label,
+.fieldset__legend {
+  font-weight: 700;
+}
+
+.form__input {
+  width: 100%;
+  background-color: var(--form-input-background-col);
+  border: 1px solid var(--form-input-border-co);
+  font-size: 1em;
+  line-height: 1.6;
+  padding: 0.25em 0.5em;
+  color: var(--text-col);
+  border-radius: 8px;
+}
+
+.form__label + .form__label,
+.fieldset + .fieldset,
+.form__input + .form__input {
+  margin-top: 1em;
+}
+
+.form__btn {
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.125em;
+  padding: 0.5em 1.25em;
+  border-radius: 8px;
+  background-color: var(--form-btn-background-col);
+  color: var(--form-btn-text-col);
+  margin-bottom: 1em;
+}
+
+.form__btn:hover {
+  opacity: 0.75;
+}
+
+.fieldset {
+  padding: 0.5em;
+  border-radius: 8px;
+}
+
+.fieldset__legend {
+  padding: 0 0.5em;
+}
+
+.visually-hidden:not(:focus):not(:active) {
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (min-width: 900px) {
+  .form__label + .form__label,
+  .form__input + .form__input {
+    margin-top: 0;
+  }
+}

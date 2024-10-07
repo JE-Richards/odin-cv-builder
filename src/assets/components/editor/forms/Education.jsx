@@ -1,3 +1,6 @@
+import './styles/shared-styles.css';
+import './styles/Education.css';
+
 export default function Education(props) {
   const { data, handleChanges } = props;
 
@@ -27,14 +30,14 @@ export default function Education(props) {
     <form action="" className="form form--education">
       <button
         type="button"
-        className="form--education__btn"
+        className="form__btn form__btn--education"
         onClick={addEducation}
       >
         + Education
       </button>
       {data.map((education, educationIndex) => (
-        <fieldset key={educationIndex}>
-          <legend className="visually-hidden">
+        <fieldset key={educationIndex} className="fieldset fieldset--education">
+          <legend className="fieldset__legend visually-hidden">
             {`Education ${educationIndex + 1} Details`}
           </legend>
           <label className="form__label">
@@ -43,6 +46,7 @@ export default function Education(props) {
               type="text"
               name="institute"
               placeholder="Institute name"
+              className="form__input"
               value={education.institute}
               onChange={(e) =>
                 handleEducationChange(
@@ -59,6 +63,7 @@ export default function Education(props) {
               type="text"
               name="qualification"
               placeholder="Qualification achieved"
+              className="form__input"
               value={education.qualification}
               onChange={(e) =>
                 handleEducationChange(
@@ -74,6 +79,7 @@ export default function Education(props) {
             <input
               type="date"
               name="dateFrom"
+              className="form__input"
               value={education.dateFrom}
               onChange={(e) =>
                 handleEducationChange(
@@ -89,6 +95,7 @@ export default function Education(props) {
             <input
               type="date"
               name="dateTo"
+              className="form__input"
               value={education.dateTo}
               onChange={(e) =>
                 handleEducationChange(

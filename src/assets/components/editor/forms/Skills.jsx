@@ -1,3 +1,6 @@
+import './styles/shared-styles.css';
+import './styles/Skills.css';
+
 export default function Skills(props) {
   const { data, handleChanges } = props;
 
@@ -15,14 +18,19 @@ export default function Skills(props) {
 
   return (
     <form className="form form--skills">
-      <button type="button" className="form--skills__btn" onClick={addSkill}>
+      <button
+        type="button"
+        className="form__btn form__btn--skills"
+        onClick={addSkill}
+      >
         + Skill
       </button>
-      <fieldset className="form--skills__inputs">
-        <legend className="visually-hidden">Skills</legend>
+      <fieldset className="fieldset form--skills__inputs">
+        <legend className="fieldset__legend visually-hidden">Skills</legend>
         {data.map((skill, skillIndex) => (
           <input
             type="text"
+            className="form__input"
             key={skillIndex}
             placeholder={`Skill ${skillIndex + 1}`}
             value={skill}

@@ -1,3 +1,6 @@
+import './styles/shared-styles.css';
+import './styles/Experience.css';
+
 export default function Experience(props) {
   const { data, handleChanges } = props;
 
@@ -62,14 +65,17 @@ export default function Experience(props) {
     <form action="" className="form form--experiences">
       <button
         type="button"
-        className="form--experiences__btn"
+        className="form__btn form__btn--experience"
         onClick={addExperience}
       >
         + Experience
       </button>
       {data.map((experience, experienceIndex) => (
-        <fieldset key={experienceIndex}>
-          <legend className="visually-hidden">
+        <fieldset
+          key={experienceIndex}
+          className="fieldset fieldset--experience"
+        >
+          <legend className="fieldset__legend visually-hidden">
             {`Experience ${experienceIndex + 1} Details`}
           </legend>
           <label className="form__label">
@@ -78,6 +84,7 @@ export default function Experience(props) {
               type="text"
               name="company"
               placeholder="Company name"
+              className="form__input"
               value={experience.company}
               onChange={(e) =>
                 handleExperienceChange(
@@ -94,6 +101,7 @@ export default function Experience(props) {
               type="text"
               name="role"
               placeholder="Role title"
+              className="form__input"
               value={experience.role}
               onChange={(e) =>
                 handleExperienceChange(
@@ -109,6 +117,7 @@ export default function Experience(props) {
             <input
               type="date"
               name="dateFrom"
+              className="form__input"
               value={experience.dateFrom}
               onChange={(e) =>
                 handleExperienceChange(
@@ -124,6 +133,7 @@ export default function Experience(props) {
             <input
               type="date"
               name="dateTo"
+              className="form__input"
               value={experience.dateTo}
               onChange={(e) =>
                 handleExperienceChange(
@@ -134,17 +144,19 @@ export default function Experience(props) {
               }
             />
           </label>
-          <fieldset>
-            <legend>Role responsibilities</legend>
+          <fieldset className="fieldset fieldset--experience__responsibility">
+            <legend className="fieldset__legend">Role responsibilities</legend>
             <button
               type="button"
               onClick={() => addResponsibility(experienceIndex)}
+              className="form__btn form__btn--responsibility"
             >
               + Responsibility
             </button>
             {experience.responsibilities.map((resp, respIndex) => (
               <input
                 type="text"
+                className="form__input"
                 key={respIndex}
                 placeholder={`Responsibility ${respIndex + 1}`}
                 value={resp}

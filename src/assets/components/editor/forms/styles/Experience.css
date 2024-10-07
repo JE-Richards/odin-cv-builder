@@ -1,0 +1,21 @@
+.fieldset--experience__responsibility {
+  margin-top: 0.5em;
+}
+
+@media (min-width: 900px) {
+  .fieldset--experience {
+    display: grid;
+    grid-template-rows: 1fr 1fr auto;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+  }
+
+  .fieldset--experience__responsibility {
+    grid-column: span 2;
+    margin-top: 0;
+  }
+
+  .fieldset--experience__responsibility > .form__input + .form__input {
+    margin-top: 1em;
+  }
+}

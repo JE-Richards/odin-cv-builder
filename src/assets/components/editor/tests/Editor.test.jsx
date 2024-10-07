@@ -78,14 +78,14 @@ const mockEmptyData = {
 };
 
 const mockDetails = {
-  editor: { title: 'Editor title', details: 'Editor details here' },
+  editor: { title: 'Editor title', description: 'Editor details here' },
   personalSummary: {
     title: 'Personal summary title',
-    details: 'Personal summary details here',
+    description: 'Personal summary details here',
   },
   contactDetails: {
     title: 'Contact details title',
-    details: 'Contact details details here',
+    description: 'Contact details details here',
   },
   experience: { title: 'Experience title', details: 'Experience details here' },
   education: { title: 'Education title', details: 'Education details here' },

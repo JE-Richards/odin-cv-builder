@@ -1,0 +1,20 @@
+.form__input--text-area {
+  width: 100%;
+  max-width: 100%;
+  resize: vertical;
+  font-size: 1rem;
+}
+
+@media (min-width: 900px) {
+  .form--personal-summary {
+    display: grid;
+    grid-template-rows: 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+  }
+
+  .form--personal-summary > .form__label:nth-child(3),
+  .form--personal-summary > .form__label:last-child {
+    grid-column: span 2;
+  }
+}

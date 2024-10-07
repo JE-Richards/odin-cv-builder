@@ -1,3 +1,6 @@
+import './styles/shared-styles.css';
+import './styles/Interests.css';
+
 export default function Interests(props) {
   const { data, handleChanges } = props;
 
@@ -18,16 +21,19 @@ export default function Interests(props) {
     <form className="form form--interests">
       <button
         type="button"
-        className="form--interests__btn"
+        className="form__btn form__btn--interests"
         onClick={addInterest}
       >
         + Interest
       </button>
-      <fieldset className="form--interests__inputs">
-        <legend className="visually-hidden">Hobbies & Interests</legend>
+      <fieldset className="fieldset form--interests__inputs">
+        <legend className="fieldset__legend visually-hidden">
+          Hobbies & Interests
+        </legend>
         {data.map((interest, interestIndex) => (
           <input
             type="text"
+            className="form__input"
             key={interestIndex}
             placeholder={`Interest ${interestIndex + 1}`}
             value={interest}

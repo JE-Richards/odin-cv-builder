@@ -1,3 +1,4 @@
+import './styles/Editor.css';
 import PersonalSummary from './forms/PersonalSummary.jsx';
 import ContactDetails from './forms/ContactDetails.jsx';
 import Experience from './forms/Experience.jsx';
@@ -50,12 +51,14 @@ export default function Editor(props) {
     <section className="editor">
       <div className="editor__details">
         <h1 className="editor__details__title">{formDetails.editor.title}</h1>
-        <p className="editor__details__text">{formDetails.editor.details}</p>
+        <p className="editor__details__text">
+          {formDetails.editor.description}
+        </p>
       </div>
 
       <FormSection
         title={formDetails.personalSummary.title}
-        description={formDetails.personalSummary.details}
+        description={formDetails.personalSummary.description}
         form={personalSummary}
       />
 

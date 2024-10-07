@@ -1,0 +1,7 @@
+.form-section + .form-section {
+  margin-top: 1em;
+}
+
+.form-container {
+  margin-top: 0.5em;
+}

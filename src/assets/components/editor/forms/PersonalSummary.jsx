@@ -1,3 +1,6 @@
+import './styles/shared-styles.css';
+import './styles/PersonalSummary.css';
+
 export default function PersonalSummary(props) {
   const { data, handleChanges } = props;
 
@@ -14,6 +17,7 @@ export default function PersonalSummary(props) {
           type="text"
           name="firstName"
           placeholder="John"
+          className="form__input"
           onChange={handleInputChanges}
           value={data.firstName}
         />
@@ -24,6 +28,7 @@ export default function PersonalSummary(props) {
           type="text"
           name="lastName"
           placeholder="Doe"
+          className="form__input"
           onChange={handleInputChanges}
           value={data.lastName}
         />
@@ -34,6 +39,7 @@ export default function PersonalSummary(props) {
           type="text"
           name="profession"
           placeholder="Web Developer"
+          className="form__input"
           onChange={handleInputChanges}
           value={data.profession}
         />
@@ -46,6 +52,7 @@ export default function PersonalSummary(props) {
           onChange={handleInputChanges}
           rows="5"
           cols="50"
+          className="form__input form__input--text-area"
           value={data.professionalSummary}
         ></textarea>
       </label>

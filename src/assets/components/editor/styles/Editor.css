@@ -1,0 +1,17 @@
+.editor {
+  margin: 2em 0;
+}
+
+.editor__details {
+  margin: 1em 0;
+}
+
+.editor__details__title {
+  font-size: 5em;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.editor__details__text {
+  margin-top: 1em;
+}

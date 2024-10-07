@@ -1,3 +1,6 @@
+import './styles/shared-styles.css';
+import './styles/ContactDetails.css';
+
 export default function ContactDetails(props) {
   const { data, handleChanges } = props;
 
@@ -14,6 +17,7 @@ export default function ContactDetails(props) {
           type="email"
           name="email"
           placeholder="john.doe@domain.com"
+          className="form__input"
           onChange={handleInputChanges}
           value={data.email}
         />
@@ -24,6 +28,7 @@ export default function ContactDetails(props) {
           type="tel"
           name="mobile"
           placeholder="01234567890"
+          className="form__input"
           onChange={handleInputChanges}
           value={data.mobile}
         />
@@ -34,6 +39,7 @@ export default function ContactDetails(props) {
           type="text"
           name="linkedIn"
           placeholder="John-Doe"
+          className="form__input"
           onChange={handleInputChanges}
           value={data.linkedIn}
         />
@@ -44,6 +50,7 @@ export default function ContactDetails(props) {
           type="url"
           name="portfolio"
           placeholder="www.myportfolio.com"
+          className="form__input"
           onChange={handleInputChanges}
           value={data.portfolio}
         />
