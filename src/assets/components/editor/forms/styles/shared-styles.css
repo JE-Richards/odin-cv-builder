@@ -58,6 +58,14 @@
   padding: 0 0.5em;
 }
 
+.form__input--error {
+  border: 2px solid var(--form-error-col);
+}
+
+.form__error-message {
+  color: var(--form-error-col);
+}
+
 .visually-hidden:not(:focus):not(:active) {
   border: 0;
   clip: rect(0 0 0 0);

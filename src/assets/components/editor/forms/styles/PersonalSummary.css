@@ -8,7 +8,7 @@
 @media (min-width: 900px) {
   .form--personal-summary {
     display: grid;
-    grid-template-rows: 1fr 1fr auto;
+    grid-template-rows: repeat(3, auto);
     grid-template-columns: 1fr 1fr;
     gap: 1em;
   }

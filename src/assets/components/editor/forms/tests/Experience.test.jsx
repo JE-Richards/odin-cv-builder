@@ -13,8 +13,8 @@ const mockData = [
   {
     company: 'Test inc',
     role: 'Tester',
-    dateFrom: '2023-09-28',
-    dateTo: '2024-09-28',
+    dateFrom: '09/2023',
+    dateTo: '09/2024',
     responsibilities: ['Testing code', 'Build UI'],
   },
 ];
@@ -115,8 +115,8 @@ describe('Testing the Experience component', () => {
 
       expect(companyNameInput.value).toBe('Test inc');
       expect(roleTitleInput.value).toBe('Tester');
-      expect(dateFromInput.value).toBe('2023-09-28');
-      expect(dateToInput.value).toBe('2024-09-28');
+      expect(dateFromInput.value).toBe('09/2023');
+      expect(dateToInput.value).toBe('09/2024');
       expect(respOneInput.value).toBe('Testing code');
       expect(respTwoInput.value).toBe('Build UI');
     });
@@ -195,11 +195,11 @@ describe('Testing the Experience component', () => {
       fireEvent.change(roleTitleInput, { target: { value: 'CEO' } });
       expect(roleTitleInput.value).toBe('CEO');
 
-      fireEvent.change(dateFromInput, { target: { value: '2020-01-01' } });
-      expect(dateFromInput.value).toBe('2020-01-01');
+      fireEvent.change(dateFromInput, { target: { value: '01/2020' } });
+      expect(dateFromInput.value).toBe('01/2020');
 
-      fireEvent.change(dateToInput, { target: { value: '2022-01-01' } });
-      expect(dateToInput.value).toBe('2022-01-01');
+      fireEvent.change(dateToInput, { target: { value: '01/2022' } });
+      expect(dateToInput.value).toBe('01/2022');
 
       fireEvent.change(respOneInput, { target: { value: 'Sleeping' } });
       expect(respOneInput.value).toBe('Sleeping');
@@ -217,6 +217,113 @@ describe('Testing the Experience component', () => {
       fireEvent.click(addExperienceBtn);
 
       expect(companyNameInput.value).toBe('Fake company');
+    });
+  });
+
+  describe('Testing form validation', () => {
+    test('Shows error message when input is required, has no input value, and is blurred', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const companyNameInput = screen.getByLabelText(/Company name/i);
+      const roleTitleInput = screen.getByLabelText(/Role title/i);
+      const dateFromInput = screen.getByLabelText(/Date from/i);
+      const dateToInput = screen.getByLabelText(/Date to/i);
+
+      fireEvent.blur(companyNameInput);
+      expect(screen.getByText('Company name is required.')).toBeInTheDocument();
+
+      fireEvent.blur(roleTitleInput);
+      expect(screen.getByText('Role title is required.')).toBeInTheDocument();
+
+      fireEvent.blur(dateFromInput);
+      expect(
+        screen.getByText('The date you started this role is required.')
+      ).toBeInTheDocument();
+
+      fireEvent.blur(dateToInput);
+      expect(
+        screen.getByText('The date you finished this role is required.')
+      ).toBeInTheDocument();
+    });
+
+    test('Shows error when an invalid character is input into date from and date to', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const dateFromLabel = screen.getByText(/Date from/i);
+      const dateFromInput = screen.getByLabelText(/Date from/i);
+      const dateToLabel = screen.getByText(/Date to/i);
+      const dateToInput = screen.getByLabelText(/Date to/i);
+
+      fireEvent.change(dateFromInput, { target: { value: '@' } });
+      fireEvent.change(dateToInput, { target: { value: '@' } });
+
+      const errMessages = screen.getAllByText(
+        'The date can only contain digits and /'
+      );
+
+      expect(errMessages.length).toBe(2);
+      expect(dateFromLabel).toContainElement(errMessages[0]);
+      expect(dateToLabel).toContainElement(errMessages[1]);
+    });
+
+    test('Shows error when an invalid date format is entered', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const dateFromLabel = screen.getByText(/Date from/i);
+      const dateFromInput = screen.getByLabelText(/Date from/i);
+      const dateToLabel = screen.getByText(/Date to/i);
+      const dateToInput = screen.getByLabelText(/Date to/i);
+
+      fireEvent.change(dateFromInput, { target: { value: '99/0000' } });
+      fireEvent.blur(dateFromInput);
+      fireEvent.change(dateToInput, { target: { value: '00/9999' } });
+      fireEvent.blur(dateToInput);
+
+      const errMessages = screen.getAllByText(
+        'The date must be in the format MM/YYYY where both M and Y are digits, and MM must be between 01 and 12.'
+      );
+
+      expect(errMessages.length).toBe(2);
+      expect(dateFromLabel).toContainElement(errMessages[0]);
+      expect(dateToLabel).toContainElement(errMessages[1]);
+    });
+
+    test('Error states are unique to each set of instance of an education form', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addExperienceBtn = screen.getByRole('button', {
+        name: /\+ Experience/i,
+      });
+
+      fireEvent.click(addExperienceBtn);
+
+      const companyLabels = screen.getAllByText('Company name');
+      const roleLabels = screen.getAllByText('Role title');
+
+      const companyInputOne = within(companyLabels[0]).getByPlaceholderText(
+        'Company name'
+      );
+      const roleInputTwo = within(roleLabels[1]).getByPlaceholderText(
+        'Role title'
+      );
+
+      // Check one doesn't effect two
+      fireEvent.blur(companyInputOne);
+
+      const companyError = screen.getByText('Company name is required.'); // fails if more than one instance of the text
+      const companyOneErrorCheck = companyLabels[0].contains(companyError); // expect true
+      const companyTwoErrorCheck = companyLabels[1].contains(companyError); // expect false
+      expect(companyOneErrorCheck).toBe(true);
+      expect(companyTwoErrorCheck).toBe(false);
+
+      // check two doesn't effect one
+      fireEvent.blur(roleInputTwo);
+
+      const roleError = screen.getByText('Role title is required.');
+      const roleOneErrorCheck = roleLabels[0].contains(roleError); // expect false
+      const roleTwoErrorCheck = roleLabels[1].contains(roleError); // expect true
+      expect(roleOneErrorCheck).toBe(false);
+      expect(roleTwoErrorCheck).toBe(true);
     });
   });
 });

@@ -132,4 +132,92 @@ describe('Testing the PersonalSummary component', () => {
       );
     });
   });
+
+  describe('Testing form validation', () => {
+    // All fields are required so done in single test
+    test('Shows error message when input is required, has no input value, and is blurred', () => {
+      render(
+        <PersonalSummary
+          data={mockEmptyData}
+          handleChanges={mockHandleChanges}
+        />
+      );
+
+      const firstNameInput = screen.getByPlaceholderText('John');
+      const lastNameInput = screen.getByPlaceholderText('Doe');
+      const professionInput = screen.getByPlaceholderText('Web Developer');
+      const professionalSummaryInput = screen.getByPlaceholderText(
+        'A summary of your career and aspirations'
+      );
+
+      fireEvent.blur(firstNameInput);
+      expect(screen.getByText('First name is required.')).toBeInTheDocument();
+
+      fireEvent.blur(lastNameInput);
+      expect(screen.getByText('Last name is required.')).toBeInTheDocument();
+
+      fireEvent.blur(professionInput);
+      expect(screen.getByText('Profession is required.')).toBeInTheDocument();
+
+      fireEvent.blur(professionalSummaryInput);
+      expect(
+        screen.getByText('Professional summary is required.')
+      ).toBeInTheDocument();
+    });
+
+    // First name, last name, profession have character restrictions on input - [a-z, A-Z, -, ']
+    test('Shows error message when an invalid character is input', () => {
+      render(
+        <PersonalSummary
+          data={mockEmptyData}
+          handleChanges={mockHandleChanges}
+        />
+      );
+
+      const firstNameInput = screen.getByPlaceholderText('John');
+      const lastNameInput = screen.getByPlaceholderText('Doe');
+      const professionInput = screen.getByPlaceholderText('Web Developer');
+
+      fireEvent.change(firstNameInput, { target: { value: '@' } });
+      expect(
+        screen.getByText(
+          'First name can only contain letters, hyphens, and apostrophes.'
+        )
+      ).toBeInTheDocument();
+      expect(firstNameInput.value).toBe('');
+
+      fireEvent.change(lastNameInput, { target: { value: '@' } });
+      expect(
+        screen.getByText(
+          'Last name can only contain letters, hyphens, and apostrophes.'
+        )
+      ).toBeInTheDocument();
+      expect(lastNameInput.value).toBe('');
+
+      fireEvent.change(professionInput, { target: { value: '@' } });
+      expect(
+        screen.getByText(
+          'Profession can only contain letters, hyphens, and apostrophes.'
+        )
+      ).toBeInTheDocument();
+      expect(professionInput.value).toBe('');
+    });
+
+    test('Shows error message when professional summary is less than 50 characters', () => {
+      render(
+        <PersonalSummary data={mockData} handleChanges={mockHandleChanges} />
+      );
+
+      const professionalSummaryInput = screen.getByPlaceholderText(
+        'A summary of your career and aspirations'
+      );
+
+      fireEvent.blur(professionalSummaryInput);
+      expect(
+        screen.getByText(
+          'Professional summary should be at least 50 characters long.'
+        )
+      ).toBeInTheDocument();
+    });
+  });
 });

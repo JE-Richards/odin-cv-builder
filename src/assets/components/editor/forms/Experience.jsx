@@ -1,8 +1,59 @@
+import { useState } from 'react';
 import './styles/shared-styles.css';
 import './styles/Experience.css';
 
 export default function Experience(props) {
   const { data, handleChanges } = props;
+
+  const [errors, setErrors] = useState(
+    data.map(() => ({
+      company: '',
+      role: '',
+      dateFrom: '',
+      dateTo: '',
+      responsibilities: [''],
+    }))
+  );
+
+  const validateField = (index, name, value) => {
+    let error = '';
+
+    switch (name) {
+      case 'company':
+        if (!value.trim()) error = 'Company name is required.';
+        break;
+      case 'role':
+        if (!value.trim()) error = 'Role title is required.';
+        break;
+      case 'dateFrom':
+        if (!/^(0[1-9]|1[0-2])\/[12]\d{3}/.test(value) && value !== '') {
+          error =
+            'The date must be in the format MM/YYYY where both M and Y are digits, and MM must be between 01 and 12.';
+        } else if (!value.trim())
+          error = 'The date you started this role is required.';
+        break;
+      case 'dateTo':
+        if (!/^(0[1-9]|1[0-2])\/[12]\d{3}/.test(value) && value !== '') {
+          error =
+            'The date must be in the format MM/YYYY where both M and Y are digits, and MM must be between 01 and 12.';
+        } else if (!value.trim())
+          error = 'The date you finished this role is required.';
+        break;
+      case 'responsibilities':
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prevErrors) => {
+      const updatedErrors = [...prevErrors];
+      updatedErrors[index] = {
+        ...updatedErrors[index],
+        [name]: error,
+      };
+      return updatedErrors;
+    });
+  };
 
   const addExperience = () => {
     const updatedExperience = [
@@ -17,6 +68,16 @@ export default function Experience(props) {
     ];
 
     handleChanges(updatedExperience);
+    setErrors((prevErrors) => [
+      ...prevErrors,
+      {
+        company: '',
+        role: '',
+        dateFrom: '',
+        dateTo: '',
+        responsibilities: [''],
+      },
+    ]);
   };
 
   const addResponsibility = (index) => {
@@ -33,6 +94,29 @@ export default function Experience(props) {
   };
 
   const handleExperienceChange = (index, name, value) => {
+    if (['dateFrom', 'dateTo'].includes(name)) {
+      if (!/^[0-9/]+$/.test(value) && value !== '') {
+        setErrors((prevErrors) => {
+          const updatedErrors = [...prevErrors];
+          updatedErrors[index] = {
+            ...updatedErrors[index],
+            [name]: 'The date can only contain digits and /',
+          };
+          return updatedErrors;
+        });
+        return;
+      } else {
+        setErrors((prevErrors) => {
+          const updatedErrors = [...prevErrors];
+          updatedErrors[index] = {
+            ...updatedErrors[index],
+            [name]: '',
+          };
+          return updatedErrors;
+        });
+      }
+    }
+
     const updatedExperience = data.map((experience, experienceIndex) => {
       return experienceIndex === index
         ? { ...experience, [name]: value }
@@ -61,6 +145,11 @@ export default function Experience(props) {
     handleChanges(updatedExperience);
   };
 
+  const handleInputBlur = (index, e) => {
+    const { name, value } = e.target;
+    validateField(index, name, value);
+  };
+
   return (
     <form action="" className="form form--experiences">
       <button
@@ -79,12 +168,14 @@ export default function Experience(props) {
             {`Experience ${experienceIndex + 1} Details`}
           </legend>
           <label className="form__label">
-            Company name
+            Company name<span className="input__label--required">*</span>
             <input
               type="text"
               name="company"
               placeholder="Company name"
-              className="form__input"
+              className={`form__input ${
+                errors[experienceIndex].company ? 'form__input--error' : ''
+              }`}
               value={experience.company}
               onChange={(e) =>
                 handleExperienceChange(
@@ -93,15 +184,24 @@ export default function Experience(props) {
                   e.target.value
                 )
               }
+              onBlur={(e) => handleInputBlur(experienceIndex, e)}
+              required
             />
+            {errors[experienceIndex].company && (
+              <p className="form__error-message">
+                {errors[experienceIndex].company}
+              </p>
+            )}
           </label>
           <label className="form__label">
-            Role title
+            Role title<span className="input__label--required">*</span>
             <input
               type="text"
               name="role"
               placeholder="Role title"
-              className="form__input"
+              className={`form__input ${
+                errors[experienceIndex].role ? 'form__input--error' : ''
+              }`}
               value={experience.role}
               onChange={(e) =>
                 handleExperienceChange(
@@ -110,14 +210,24 @@ export default function Experience(props) {
                   e.target.value
                 )
               }
+              onBlur={(e) => handleInputBlur(experienceIndex, e)}
+              required
             />
+            {errors[experienceIndex].role && (
+              <p className="form__error-message">
+                {errors[experienceIndex].role}
+              </p>
+            )}
           </label>
           <label className="form__label">
-            Date from
+            Date from<span className="input__label--required">*</span>
             <input
-              type="date"
+              type="text"
               name="dateFrom"
-              className="form__input"
+              placeholder="MM/YYYY"
+              className={`form__input ${
+                errors[experienceIndex].dateFrom ? 'form__input--error' : ''
+              }`}
               value={experience.dateFrom}
               onChange={(e) =>
                 handleExperienceChange(
@@ -126,14 +236,26 @@ export default function Experience(props) {
                   e.target.value
                 )
               }
+              onBlur={(e) => handleInputBlur(experienceIndex, e)}
+              required
+              minLength="7"
+              maxLength="7"
             />
+            {errors[experienceIndex].dateFrom && (
+              <p className="form__error-message">
+                {errors[experienceIndex].dateFrom}
+              </p>
+            )}
           </label>
           <label className="form__label">
-            Date to
+            Date to<span className="input__label--required">*</span>
             <input
-              type="date"
+              type="text"
               name="dateTo"
-              className="form__input"
+              placeholder="MM/YYYY"
+              className={`form__input ${
+                errors[experienceIndex].dateTo ? 'form__input--error' : ''
+              }`}
               value={experience.dateTo}
               onChange={(e) =>
                 handleExperienceChange(
@@ -142,7 +264,16 @@ export default function Experience(props) {
                   e.target.value
                 )
               }
+              onBlur={(e) => handleInputBlur(experienceIndex, e)}
+              required
+              minLength="7"
+              maxLength="7"
             />
+            {errors[experienceIndex].dateTo && (
+              <p className="form__error-message">
+                {errors[experienceIndex].dateTo}
+              </p>
+            )}
           </label>
           <fieldset className="fieldset fieldset--experience__responsibility">
             <legend className="fieldset__legend">Role responsibilities</legend>
@@ -167,6 +298,7 @@ export default function Experience(props) {
                     e.target.value
                   )
                 }
+                onBlur={handleInputBlur}
               />
             ))}
           </fieldset>

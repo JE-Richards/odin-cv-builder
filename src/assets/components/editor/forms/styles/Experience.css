@@ -5,7 +5,7 @@
 @media (min-width: 900px) {
   .fieldset--experience {
     display: grid;
-    grid-template-rows: 1fr 1fr auto;
+    grid-template-rows: repeat(3, auto);
     grid-template-columns: repeat(2, 1fr);
     gap: 1em;
   }

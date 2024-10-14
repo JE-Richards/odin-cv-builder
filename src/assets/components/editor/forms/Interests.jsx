@@ -1,12 +1,29 @@
+import { useState } from 'react';
 import './styles/shared-styles.css';
 import './styles/Interests.css';
 
 export default function Interests(props) {
   const { data, handleChanges } = props;
 
+  const [errors, setErrors] = useState(data.map(() => ''));
+
+  const validateField = (index, value) => {
+    let error = '';
+
+    if (!value.trim()) error = 'A hobby or interest is required.';
+
+    setErrors((prevErrors) => {
+      const updatedErrors = [...prevErrors];
+      updatedErrors[index] = error;
+      return updatedErrors;
+    });
+  };
+
   const addInterest = () => {
     const updatedInterests = [...data, ''];
     handleChanges(updatedInterests);
+
+    setErrors((prevErrors) => [...prevErrors, '']);
   };
 
   const handleInterestChange = (index, value) => {
@@ -15,6 +32,10 @@ export default function Interests(props) {
     );
 
     handleChanges(updatedInterests);
+  };
+
+  const handleInputBlur = (index, e) => {
+    validateField(index, e.target.value);
   };
 
   return (
@@ -31,16 +52,26 @@ export default function Interests(props) {
           Hobbies & Interests
         </legend>
         {data.map((interest, interestIndex) => (
-          <input
-            type="text"
-            className="form__input"
-            key={interestIndex}
-            placeholder={`Interest ${interestIndex + 1}`}
-            value={interest}
-            onChange={(e) =>
-              handleInterestChange(interestIndex, e.target.value)
-            }
-          />
+          <label className="form__label" key={interestIndex}>
+            <span className="visually-hidden">{`Interest ${
+              interestIndex + 1
+            }`}</span>
+            <input
+              type="text"
+              className={`form__input ${
+                errors[interestIndex] ? 'form__input--error' : ''
+              }`}
+              placeholder={`Interest ${interestIndex + 1}`}
+              value={interest}
+              onChange={(e) =>
+                handleInterestChange(interestIndex, e.target.value)
+              }
+              onBlur={(e) => handleInputBlur(interestIndex, e)}
+            />
+            {errors[interestIndex] && (
+              <p className="form__error-message">{errors[interestIndex]}</p>
+            )}
+          </label>
         ))}
       </fieldset>
     </form>

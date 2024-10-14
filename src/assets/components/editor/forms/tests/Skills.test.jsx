@@ -1,6 +1,12 @@
 import Skills from '../Skills.jsx';
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+  within,
+} from '@testing-library/react';
 import { useState } from 'react';
 
 const mockData = ['HTML', 'CSS', 'JavaScript'];
@@ -97,6 +103,35 @@ describe('Testing the Skills component', () => {
       fireEvent.click(addSkillsBtn);
 
       expect(skillOneInput.value).toBe('Python');
+    });
+
+    describe('Testing form validation', () => {
+      test('Shows error message when input is required, has no input value, and is blurred', () => {
+        render(<MockParentComponent data={mockEmptyData} />);
+
+        const skillInput = screen.getByPlaceholderText('Skill 1');
+
+        fireEvent.blur(skillInput);
+
+        expect(screen.getByText('A skill is required.')).toBeInTheDocument();
+      });
+
+      test('Error states are unique to each instance of a skill input', () => {
+        render(<MockParentComponent data={mockEmptyData} />);
+
+        const addSkillsBtn = screen.getByRole('button', { name: /\+ Skill/i });
+        fireEvent.click(addSkillsBtn);
+
+        const skillOneInput = screen.getByPlaceholderText('Skill 1');
+        const skillTwoInput = screen.getByPlaceholderText('Skill 2');
+        const skillOneLabel = skillOneInput.closest('label');
+        const skillTwoLabel = skillTwoInput.closest('label');
+
+        fireEvent.blur(skillOneInput);
+        const error = screen.getByText('A skill is required.');
+        expect(skillOneLabel.contains(error)).toBe(true);
+        expect(skillTwoLabel.contains(error)).toBe(false);
+      });
     });
   });
 });

@@ -12,14 +12,15 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --background-col: #242424;
+  --background-col: rgb(36, 36, 36);
   --text-col: rgba(255, 255, 255, 0.87);
-  --form-background-col: #4b4b4b;
-  --form-border-col: #3b3b3b;
+  --form-background-col: rgb(75, 75, 75);
+  --form-border-col: rgb(59, 59, 59);
   --form-input-background-col: var(--form-border-col);
   --form-input-border-col: var(--background-col);
   --form-btn-background-col: var(--text-col);
   --form-btn-text-col: var(--background-col);
+  --form-error-col: rgb(247, 80, 80);
 }
 
 *,

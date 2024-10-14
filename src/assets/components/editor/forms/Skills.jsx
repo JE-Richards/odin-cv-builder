@@ -1,12 +1,32 @@
+import { useState } from 'react';
 import './styles/shared-styles.css';
 import './styles/Skills.css';
 
 export default function Skills(props) {
   const { data, handleChanges } = props;
 
+  const [errors, setErrors] = useState(data.map(() => ''));
+
+  const validateField = (index, value) => {
+    let error = '';
+
+    if (!value.trim()) error = 'A skill is required.';
+
+    setErrors((prevErrors) => {
+      const updatedErrors = [...prevErrors];
+      updatedErrors[index] = error;
+      return updatedErrors;
+    });
+  };
+
   const addSkill = () => {
     const updatedSkills = [...data, ''];
     handleChanges(updatedSkills);
+
+    setErrors((prevErrors) => {
+      const updatedErrors = [...prevErrors, ''];
+      return updatedErrors;
+    });
   };
 
   const handleSkillChange = (index, value) => {
@@ -14,6 +34,10 @@ export default function Skills(props) {
       skillIndex === index ? value : skill
     );
     handleChanges(updatedSkills);
+  };
+
+  const handleInputBlur = (index, e) => {
+    validateField(index, e.target.value);
   };
 
   return (
@@ -26,16 +50,26 @@ export default function Skills(props) {
         + Skill
       </button>
       <fieldset className="fieldset form--skills__inputs">
-        <legend className="fieldset__legend visually-hidden">Skills</legend>
+        <legend className="fieldset__legend visually-hidden">
+          Skills<span className="input__label--required">*</span>
+        </legend>
         {data.map((skill, skillIndex) => (
-          <input
-            type="text"
-            className="form__input"
-            key={skillIndex}
-            placeholder={`Skill ${skillIndex + 1}`}
-            value={skill}
-            onChange={(e) => handleSkillChange(skillIndex, e.target.value)}
-          />
+          <label className="form__label" key={skillIndex}>
+            <span className="visually-hidden">{`Skill ${skillIndex + 1}`}</span>
+            <input
+              type="text"
+              className={`form__input ${
+                errors[skillIndex] ? 'form__input--error' : ''
+              }`}
+              placeholder={`Skill ${skillIndex + 1}`}
+              value={skill}
+              onChange={(e) => handleSkillChange(skillIndex, e.target.value)}
+              onBlur={(e) => handleInputBlur(skillIndex, e)}
+            />
+            {errors[skillIndex] && (
+              <p className="form__error-message">{errors[skillIndex]}</p>
+            )}
+          </label>
         ))}
       </fieldset>
     </form>

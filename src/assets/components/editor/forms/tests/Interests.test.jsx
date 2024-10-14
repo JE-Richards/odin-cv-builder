@@ -1,6 +1,12 @@
 import Interests from '../Interests.jsx';
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+  within,
+} from '@testing-library/react';
 import { useState } from 'react';
 
 const mockData = ['Coding', 'Reading', 'Writing'];
@@ -101,6 +107,39 @@ describe('Testing the Interests component', () => {
       fireEvent.click(addInterestBtn);
 
       expect(interestOneInput.value).toBe('Walking');
+    });
+  });
+
+  describe('Testing form validation', () => {
+    test('Shows error message when input is required, has no input value, and is blurred', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const interestOne = screen.getByPlaceholderText('Interest 1');
+
+      fireEvent.blur(interestOne);
+
+      expect(
+        screen.getByText('A hobby or interest is required.')
+      ).toBeInTheDocument();
+    });
+
+    test('Error states are unique to each instance of a skill input', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addInterestBtn = screen.getByRole('button', {
+        name: /\+ Interest/i,
+      });
+      fireEvent.click(addInterestBtn);
+
+      const interestOneInput = screen.getByPlaceholderText('Interest 1');
+      const interestTwoInput = screen.getByPlaceholderText('Interest 2');
+      const interestOneLabel = interestOneInput.closest('label');
+      const interestTwoLabel = interestTwoInput.closest('label');
+
+      fireEvent.blur(interestOneInput);
+      const error = screen.getByText('A hobby or interest is required.');
+      expect(interestOneLabel.contains(error)).toBe(true);
+      expect(interestTwoLabel.contains(error)).toBe(false);
     });
   });
 });
