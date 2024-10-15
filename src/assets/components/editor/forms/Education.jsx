@@ -76,6 +76,18 @@ export default function Education(props) {
     ]);
   };
 
+  const deleteEducation = (index) => {
+    const updatedEducation = [...data];
+    updatedEducation.splice(index, 1);
+    handleChanges(updatedEducation);
+
+    setErrors((prevErrors) => {
+      const updatedErrors = [...prevErrors];
+      updatedErrors.splice(index, 1);
+      return updatedErrors;
+    });
+  };
+
   const handleEducationChange = (index, name, value) => {
     if (['dateFrom', 'dateTo'].includes(name)) {
       if (!/^[0-9/]+$/.test(value) && value !== '') {
@@ -123,10 +135,20 @@ export default function Education(props) {
       </button>
       {data.map((education, educationIndex) => (
         <fieldset key={educationIndex} className="fieldset fieldset--education">
-          <legend className="fieldset__legend visually-hidden">
+          <legend className="fieldset__legend">
             {`Education ${educationIndex + 1} Details`}
           </legend>
-          <label className="form__label">
+          <div className="form__btn-container">
+            <button
+              type="button"
+              className="form__btn form__btn--delete-education"
+              onClick={() => deleteEducation(educationIndex)}
+              disabled={data.length === 1}
+            >
+              Delete education
+            </button>
+          </div>
+          <label className="form__label form__label--institute">
             Institute name<span className="input__label--required">*</span>
             <input
               type="text"
@@ -152,7 +174,7 @@ export default function Education(props) {
               </p>
             )}
           </label>
-          <label className="form__label">
+          <label className="form__label form__label--qualification">
             Qualification achieved
             <span className="input__label--required">*</span>
             <input

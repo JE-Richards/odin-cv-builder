@@ -1,7 +1,14 @@
+.skill-container {
+  display: flex;
+  gap: 0.5em;
+}
+
+.form__btn--delete-skill {
+  margin-bottom: 0;
+}
+
 @media (min-width: 900px) {
-  .form--skills__inputs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1em;
+  .form__label--skill + .form__label--skill {
+    margin-top: 1em;
   }
 }

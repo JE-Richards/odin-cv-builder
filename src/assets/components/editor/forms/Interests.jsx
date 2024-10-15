@@ -26,6 +26,18 @@ export default function Interests(props) {
     setErrors((prevErrors) => [...prevErrors, '']);
   };
 
+  const deleteInterest = (index) => {
+    const updatedInterests = [...data];
+    updatedInterests.splice(index, 1);
+    handleChanges(updatedInterests);
+
+    setErrors((prevErrors) => {
+      const updatedErrors = [...prevErrors];
+      updatedErrors.splice(index, 1);
+      return updatedErrors;
+    });
+  };
+
   const handleInterestChange = (index, value) => {
     const updatedInterests = data.map((interest, interestIndex) =>
       interestIndex === index ? value : interest
@@ -52,22 +64,35 @@ export default function Interests(props) {
           Hobbies & Interests
         </legend>
         {data.map((interest, interestIndex) => (
-          <label className="form__label" key={interestIndex}>
+          <label
+            className="form__label form__label--interest"
+            key={interestIndex}
+          >
             <span className="visually-hidden">{`Interest ${
               interestIndex + 1
             }`}</span>
-            <input
-              type="text"
-              className={`form__input ${
-                errors[interestIndex] ? 'form__input--error' : ''
-              }`}
-              placeholder={`Interest ${interestIndex + 1}`}
-              value={interest}
-              onChange={(e) =>
-                handleInterestChange(interestIndex, e.target.value)
-              }
-              onBlur={(e) => handleInputBlur(interestIndex, e)}
-            />
+            <div className="interest-container">
+              <input
+                type="text"
+                className={`form__input ${
+                  errors[interestIndex] ? 'form__input--error' : ''
+                }`}
+                placeholder={`Interest ${interestIndex + 1}`}
+                value={interest}
+                onChange={(e) =>
+                  handleInterestChange(interestIndex, e.target.value)
+                }
+                onBlur={(e) => handleInputBlur(interestIndex, e)}
+              />
+              <button
+                type="button"
+                className="form__btn form__btn--delete-interest"
+                onClick={() => deleteInterest(interestIndex)}
+                disabled={data.length === 1}
+              >
+                Delete
+              </button>
+            </div>
             {errors[interestIndex] && (
               <p className="form__error-message">{errors[interestIndex]}</p>
             )}

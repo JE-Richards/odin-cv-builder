@@ -38,10 +38,12 @@ describe('Testing the Interests component', () => {
         name: /\+ Interest/i,
       });
       const interestOneInput = screen.getByPlaceholderText('Interest 1');
+      const interestOneDelBtn = screen.getByRole('button', { name: 'Delete' });
 
       expect(addInterestBtn).toBeInTheDocument();
       expect(interestOneInput).toBeInTheDocument();
       expect(interestOneInput.value).toBe('');
+      expect(interestOneDelBtn).toBeInTheDocument();
     });
 
     test('Form displays a unique input for each data element (array item) passed to the component', () => {
@@ -107,6 +109,21 @@ describe('Testing the Interests component', () => {
       fireEvent.click(addInterestBtn);
 
       expect(interestOneInput.value).toBe('Walking');
+    });
+
+    test('Clicking delete interest deletes the correct interest', () => {
+      render(<MockParentComponent data={mockData} />);
+
+      const interestInputs = screen.getAllByLabelText(/Interest \d/i);
+      const interestTwoDelBtn = within(
+        interestInputs[1].closest('.interest-container')
+      ).getByRole('button', { name: 'Delete' });
+      fireEvent.click(interestTwoDelBtn);
+
+      const updatedInterestTwo = screen.queryByDisplayValue('Reading');
+      expect(screen.getByDisplayValue('Coding')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Writing')).toBeInTheDocument();
+      expect(updatedInterestTwo).not.toBeInTheDocument();
     });
   });
 

@@ -19,6 +19,8 @@ jest.mock(
           <h1>{formDetails.editor.title}</h1>
 
           {/* buttons to simulate calling the handleChanges functions */}
+          <button onClick={handleChanges.clearForms}>Clear forms</button>
+
           <button
             onClick={() =>
               handleChanges.personalSummaryChanges({ firstName: 'Test' })
@@ -155,7 +157,7 @@ describe('Testing App component', () => {
       });
       const skillsText = screen.getByText(/Skills:/);
       fireEvent.click(skillsBtn);
-      expect(skillsText).toHaveTextContent('testing skill');
+      expect(skillsText).toHaveTextContent('Skills: testing skill');
 
       // Test handleInterestsChanges
       const interestsBtn = screen.getByRole('button', {
@@ -164,6 +166,16 @@ describe('Testing App component', () => {
       const interestsText = screen.getByText(/Interests:/);
       fireEvent.click(interestsBtn);
       expect(interestsText).toHaveTextContent('Interests: reading tests');
+
+      // Test clearForms
+      const clearFormsBtn = screen.getByRole('button', { name: 'Clear forms' });
+      fireEvent.click(clearFormsBtn);
+      expect(personalSummaryText).toHaveTextContent('First name:');
+      expect(contactDetailsText).toHaveTextContent('Email:');
+      expect(experienceText).toHaveTextContent('Company:');
+      expect(educationText).toHaveTextContent('Institute:');
+      expect(skillsText).toHaveTextContent('Skills:');
+      expect(interestsText).toHaveTextContent('Interests:');
     });
   });
 });

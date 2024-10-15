@@ -57,13 +57,18 @@ describe('Testing the Experience component', () => {
       expect(addExperienceBtn).toBeInTheDocument();
 
       // Experience and responsibilities fieldsets rendering
+      const delExpBtn = screen.getByRole('button', {
+        name: 'Delete experience',
+      });
       const fieldsets = screen.getAllByRole('group');
       const experienceFieldset = fieldsets[0];
       const responsibilitiesFieldset = fieldsets[1];
       const expFieldsetLegend = screen.getByText(/Experience 1 Details/i);
       const respFieldsetLegend = screen.getByText(/Role responsibilities/i);
+      expect(delExpBtn).toBeInTheDocument();
       expect(experienceFieldset).toBeInTheDocument();
       expect(responsibilitiesFieldset).toBeInTheDocument();
+      expect(experienceFieldset).toContainElement(delExpBtn);
       expect(experienceFieldset).toContainElement(expFieldsetLegend);
       expect(experienceFieldset).toContainElement(responsibilitiesFieldset);
       expect(responsibilitiesFieldset).toContainElement(respFieldsetLegend);
@@ -95,12 +100,15 @@ describe('Testing the Experience component', () => {
         name: /\+ Responsibility/i,
       });
       const respOneInput = screen.getByPlaceholderText(/Responsibility 1/i);
+      const respOneDelBtn = screen.getByRole('button', { name: 'Delete' });
 
       expect(addResponsibilityBtn).toBeInTheDocument();
       expect(responsibilitiesFieldset).toContainElement(addResponsibilityBtn);
       expect(respOneInput).toBeInTheDocument();
       expect(respOneInput.value).toBe('');
       expect(responsibilitiesFieldset).toContainElement(respOneInput);
+      expect(respOneDelBtn).toBeInTheDocument();
+      expect(responsibilitiesFieldset).toContainElement(respOneDelBtn);
     });
 
     test('Form correctly displays data values passed in via props', () => {
@@ -217,6 +225,123 @@ describe('Testing the Experience component', () => {
       fireEvent.click(addExperienceBtn);
 
       expect(companyNameInput.value).toBe('Fake company');
+    });
+
+    test('Clicking delete experience button deletes an experience', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addExperienceBtn = screen.getByRole('button', {
+        name: /\+ Experience/i,
+      });
+      fireEvent.click(addExperienceBtn);
+      const fieldsets = screen.getAllByRole('group');
+      expect(fieldsets.length).toBe(4);
+
+      const delExperienceBtns = screen.getAllByRole('button', {
+        name: 'Delete experience',
+      });
+      const delExperienceTwoBtn = delExperienceBtns[1];
+      fireEvent.click(delExperienceTwoBtn);
+
+      const updatedFieldsets = screen.getAllByRole('group');
+      // 2 original fieldsets, the only others should be deleted
+      expect(updatedFieldsets.length).toBe(2);
+    });
+
+    test('Clicking delete experience deletes the correct experience instance', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addExperienceBtn = screen.getByRole('button', {
+        name: /\+ Experience/i,
+      });
+      fireEvent.click(addExperienceBtn);
+      fireEvent.click(addExperienceBtn);
+
+      const fieldsets = screen.getAllByRole('group');
+      expect(fieldsets.length).toBe(6);
+
+      const expOne = fieldsets[0];
+      const expTwo = fieldsets[2];
+      const expThree = fieldsets[4];
+      const expOneCompany = within(expOne).getByLabelText(/Company name/i);
+      const expTwoCompany = within(expTwo).getByLabelText(/Company name/i);
+      const expThreeCompany = within(expThree).getByLabelText(/Company name/i);
+
+      fireEvent.change(expOneCompany, { target: { value: 'Comp 1' } });
+      fireEvent.change(expTwoCompany, { target: { value: 'Comp 2' } });
+      fireEvent.change(expThreeCompany, { target: { value: 'Comp 3' } });
+      expect(screen.getByDisplayValue('Comp 1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Comp 2')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Comp 3')).toBeInTheDocument();
+
+      const expTwoDelBtn = within(expTwo).getByRole('button', {
+        name: 'Delete experience',
+      });
+      fireEvent.click(expTwoDelBtn);
+
+      const updatedExpTwoCompany = screen.queryByDisplayValue('Comp 2');
+      expect(screen.getByDisplayValue('Comp 1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Comp 3')).toBeInTheDocument();
+      expect(updatedExpTwoCompany).not.toBeInTheDocument();
+    });
+
+    test('Clicking delete responsibility button deletes a responsibility', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addResponsibilityBtn = screen.getByRole('button', {
+        name: /\+ Responsibility/i,
+      });
+      fireEvent.click(addResponsibilityBtn);
+
+      // Select the responsibility inputs
+      const respInputs = screen.getAllByLabelText(/Responsibility \d/i);
+      expect(respInputs.length).toBe(2);
+
+      // First input -> select label -> get delete button
+      const respOneLabel = respInputs[0].closest('label');
+      const respOneDelBtn = within(respOneLabel).getByRole('button', {
+        name: 'Delete',
+      });
+
+      fireEvent.click(respOneDelBtn);
+      const updatedRespInputs = screen.getAllByLabelText(/Responsibility \d/i);
+      expect(updatedRespInputs.length).toBe(1);
+    });
+
+    test('Clicking delete responsibility deletes the correct responsibility', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addResponsibilityBtn = screen.getByRole('button', {
+        name: /\+ Responsibility/i,
+      });
+      fireEvent.click(addResponsibilityBtn);
+      fireEvent.click(addResponsibilityBtn);
+
+      const respInputs = screen.getAllByLabelText(/Responsibility \d/i);
+      expect(respInputs.length).toBe(3);
+
+      const respOne = respInputs[0];
+      const respTwo = respInputs[1];
+      const respThree = respInputs[2];
+      fireEvent.change(respOne, { target: { value: 'Resp 1' } });
+      fireEvent.change(respTwo, { target: { value: 'Resp 2' } });
+      fireEvent.change(respThree, { target: { value: 'Resp 3' } });
+      expect(screen.getByDisplayValue('Resp 1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Resp 2')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Resp 3')).toBeInTheDocument();
+
+      const respTwoDelBtn = within(respTwo.closest('label')).getByRole(
+        'button',
+        { name: 'Delete' }
+      );
+      fireEvent.click(respTwoDelBtn);
+
+      const updatedRespInputs = screen.getAllByLabelText(/Responsibility \d/i);
+      expect(updatedRespInputs.length).toBe(2);
+      const updatedRespTwo = screen.queryByDisplayValue('Resp 2');
+      expect(screen.getByDisplayValue('Resp 1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Resp 3')).toBeInTheDocument();
+      expect(updatedRespTwo).not.toBeInTheDocument();
     });
   });
 

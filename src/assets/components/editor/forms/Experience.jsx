@@ -80,6 +80,17 @@ export default function Experience(props) {
     ]);
   };
 
+  const deleteExperience = (index) => {
+    const updatedExperience = [...data];
+    updatedExperience.splice(index, 1);
+    handleChanges(updatedExperience);
+    setErrors((prevErrors) => {
+      const updatedErrors = [...prevErrors];
+      updatedErrors.splice(index, 1);
+      return updatedErrors;
+    });
+  };
+
   const addResponsibility = (index) => {
     const updatedExperience = data.map((experience, experienceIndex) =>
       experienceIndex === index
@@ -89,6 +100,13 @@ export default function Experience(props) {
           }
         : experience
     );
+
+    handleChanges(updatedExperience);
+  };
+
+  const deleteResponsibility = (expIndex, respIndex) => {
+    const updatedExperience = [...data];
+    updatedExperience[expIndex].responsibilities.splice(respIndex, 1);
 
     handleChanges(updatedExperience);
   };
@@ -164,9 +182,19 @@ export default function Experience(props) {
           key={experienceIndex}
           className="fieldset fieldset--experience"
         >
-          <legend className="fieldset__legend visually-hidden">
+          <legend className="fieldset__legend">
             {`Experience ${experienceIndex + 1} Details`}
           </legend>
+          <div className="form__btn-container">
+            <button
+              type="button"
+              className="form__btn form__btn--delete-experience"
+              onClick={() => deleteExperience(experienceIndex)}
+              disabled={data.length === 1}
+            >
+              Delete experience
+            </button>
+          </div>
           <label className="form__label">
             Company name<span className="input__label--required">*</span>
             <input
@@ -285,21 +313,38 @@ export default function Experience(props) {
               + Responsibility
             </button>
             {experience.responsibilities.map((resp, respIndex) => (
-              <input
-                type="text"
-                className="form__input"
+              <label
+                className="form__label form__label--responsibility"
                 key={respIndex}
-                placeholder={`Responsibility ${respIndex + 1}`}
-                value={resp}
-                onChange={(e) =>
-                  handleResponsibilityChange(
-                    experienceIndex,
-                    respIndex,
-                    e.target.value
-                  )
-                }
-                onBlur={handleInputBlur}
-              />
+              >
+                <span className="visually-hidden">{`Responsibility ${
+                  respIndex + 1
+                }`}</span>
+                <input
+                  type="text"
+                  className="form__input"
+                  placeholder={`Responsibility ${respIndex + 1}`}
+                  value={resp}
+                  onChange={(e) =>
+                    handleResponsibilityChange(
+                      experienceIndex,
+                      respIndex,
+                      e.target.value
+                    )
+                  }
+                  onBlur={handleInputBlur}
+                />
+                <button
+                  type="button"
+                  className="form__btn form__btn--delete-responsibility"
+                  onClick={() =>
+                    deleteResponsibility(experienceIndex, respIndex)
+                  }
+                  disabled={data[experienceIndex].responsibilities.length === 1}
+                >
+                  Delete
+                </button>
+              </label>
             ))}
           </fieldset>
         </fieldset>

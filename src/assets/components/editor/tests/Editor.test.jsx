@@ -104,6 +104,7 @@ const mockEmptyDetails = {
 };
 
 const mockHandleChanges = {
+  clearForms: jest.fn(),
   personalSummaryChanges: jest.fn(),
   contactDetailsChanges: jest.fn(),
   experienceChanges: jest.fn(),
@@ -150,8 +151,10 @@ describe('Testing the Editor component', () => {
       // Check render of Editor specific elements
       const editorTitle = screen.getByText('Editor title');
       const editorDescription = screen.getByText('Editor details here');
+      const clearFormBtn = screen.getByRole('button', { name: 'Clear form' });
       expect(editorTitle).toBeInTheDocument();
       expect(editorDescription).toBeInTheDocument();
+      expect(clearFormBtn).toBeInTheDocument();
 
       // Check child components are rendered via mocks
       expect(screen.getByText('Mocked PersonalSummary')).toBeInTheDocument();
@@ -221,6 +224,24 @@ describe('Testing the Editor component', () => {
         },
         expect.anything()
       );
+    });
+  });
+
+  describe('Testing buttons', () => {
+    test('Clicking the clear form button triggers the function', () => {
+      render(
+        <Editor
+          formData={mockData}
+          formDetails={mockDetails}
+          handleChanges={mockHandleChanges}
+        />
+      );
+
+      const clearFormBtn = screen.getByRole('button', { name: 'Clear form' });
+
+      fireEvent.click(clearFormBtn);
+
+      expect(mockHandleChanges.clearForms).toHaveBeenCalled();
     });
   });
 });

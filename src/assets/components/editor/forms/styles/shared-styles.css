@@ -49,6 +49,10 @@
   opacity: 0.75;
 }
 
+.form__btn:disabled {
+  opacity: 0.5;
+}
+
 .fieldset {
   padding: 0.5em;
   border-radius: 8px;

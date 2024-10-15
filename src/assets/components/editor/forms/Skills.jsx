@@ -29,6 +29,18 @@ export default function Skills(props) {
     });
   };
 
+  const deleteSkill = (index) => {
+    const updatedSkills = [...data];
+    updatedSkills.splice(index, 1);
+    handleChanges(updatedSkills);
+
+    setErrors((prevErrors) => {
+      const updatedErrors = [...prevErrors];
+      updatedErrors.splice(index);
+      return updatedErrors;
+    });
+  };
+
   const handleSkillChange = (index, value) => {
     const updatedSkills = data.map((skill, skillIndex) =>
       skillIndex === index ? value : skill
@@ -54,18 +66,28 @@ export default function Skills(props) {
           Skills<span className="input__label--required">*</span>
         </legend>
         {data.map((skill, skillIndex) => (
-          <label className="form__label" key={skillIndex}>
+          <label className="form__label form__label--skill" key={skillIndex}>
             <span className="visually-hidden">{`Skill ${skillIndex + 1}`}</span>
-            <input
-              type="text"
-              className={`form__input ${
-                errors[skillIndex] ? 'form__input--error' : ''
-              }`}
-              placeholder={`Skill ${skillIndex + 1}`}
-              value={skill}
-              onChange={(e) => handleSkillChange(skillIndex, e.target.value)}
-              onBlur={(e) => handleInputBlur(skillIndex, e)}
-            />
+            <div className="skill-container">
+              <input
+                type="text"
+                className={`form__input ${
+                  errors[skillIndex] ? 'form__input--error' : ''
+                }`}
+                placeholder={`Skill ${skillIndex + 1}`}
+                value={skill}
+                onChange={(e) => handleSkillChange(skillIndex, e.target.value)}
+                onBlur={(e) => handleInputBlur(skillIndex, e)}
+              />
+              <button
+                type="button"
+                className="form__btn form__btn--delete-skill"
+                onClick={() => deleteSkill(skillIndex)}
+                disabled={data.length === 1}
+              >
+                Delete
+              </button>
+            </div>
             {errors[skillIndex] && (
               <p className="form__error-message">{errors[skillIndex]}</p>
             )}

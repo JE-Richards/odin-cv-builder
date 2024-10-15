@@ -2,20 +2,39 @@
   margin-top: 0.5em;
 }
 
+.form__label--responsibility {
+  display: flex;
+  gap: 0.5em;
+}
+
+.form__btn--delete-responsibility {
+  margin-bottom: 0;
+}
+
+.fieldset--experience__responsibility
+  > .form__label--responsibility
+  + .form__label--responsibility {
+  margin-top: 1em;
+}
+
 @media (min-width: 900px) {
   .fieldset--experience {
     display: grid;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: repeat(4, auto);
     grid-template-columns: repeat(2, 1fr);
     gap: 1em;
+  }
+
+  .form__btn-container {
+    grid-column: span 2;
+  }
+
+  .form__btn--delete-experience {
+    margin-bottom: 0;
   }
 
   .fieldset--experience__responsibility {
     grid-column: span 2;
     margin-top: 0;
-  }
-
-  .fieldset--experience__responsibility > .form__input + .form__input {
-    margin-top: 1em;
   }
 }

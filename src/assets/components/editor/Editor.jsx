@@ -10,6 +10,10 @@ import FormSection from './FormSection.jsx';
 export default function Editor(props) {
   const { formData, formDetails, handleChanges } = props;
 
+  const clearForms = () => {
+    handleChanges.clearForms();
+  };
+
   const personalSummary = (
     <PersonalSummary
       data={formData.personalSummary}
@@ -54,6 +58,13 @@ export default function Editor(props) {
         <p className="editor__details__text">
           {formDetails.editor.description}
         </p>
+        <button
+          type="button"
+          className="form__btn form__btn--clear"
+          onClick={clearForms}
+        >
+          Clear form
+        </button>
       </div>
 
       <FormSection

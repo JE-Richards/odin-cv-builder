@@ -64,6 +64,13 @@ describe('Testing the Education component', () => {
       expect(legend).toBeInTheDocument();
       expect(educationFieldset).toContainElement(legend);
 
+      // Check delete education button renders
+      const delEduBtn = screen.getByRole('button', {
+        name: 'Delete education',
+      });
+      expect(delEduBtn).toBeInTheDocument();
+      expect(educationFieldset).toContainElement(delEduBtn);
+
       // Ensure all inputs render
       const instituteInput = screen.getByPlaceholderText('Institute name');
       const qualificationInput = screen.getByPlaceholderText(
@@ -176,6 +183,60 @@ describe('Testing the Education component', () => {
       fireEvent.click(addEducationBtn);
 
       expect(instituteInput.value).toBe('Harvard');
+    });
+
+    test('Clicking delete education deletes an education', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addEducationBtn = screen.getByRole('button', {
+        name: /\+ Education/i,
+      });
+      fireEvent.click(addEducationBtn);
+
+      const fieldsets = screen.getAllByRole('group');
+      expect(fieldsets.length).toBe(mockData.length + 1);
+
+      const delEduBtns = screen.getAllByRole('button', {
+        name: 'Delete education',
+      });
+
+      // Delete first education
+      fireEvent.click(delEduBtns[0]);
+      const updatedFieldsets = screen.getAllByRole('group');
+      expect(updatedFieldsets.length).toBe(mockData.length);
+    });
+
+    test('Clicking delete education deletes the correct education', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addEducationBtn = screen.getByRole('button', {
+        name: /\+ Education/i,
+      });
+      fireEvent.click(addEducationBtn);
+      fireEvent.click(addEducationBtn);
+
+      const eduInstituteInputs =
+        screen.getAllByPlaceholderText('Institute name');
+      expect(eduInstituteInputs.length).toBe(3);
+      const eduInstOne = eduInstituteInputs[0];
+      const eduInstTwo = eduInstituteInputs[1];
+      const eduInstThree = eduInstituteInputs[2];
+      fireEvent.change(eduInstOne, { target: { value: 'Inst 1' } });
+      fireEvent.change(eduInstTwo, { target: { value: 'Inst 2' } });
+      fireEvent.change(eduInstThree, { target: { value: 'Inst 3' } });
+      expect(screen.getByDisplayValue('Inst 1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Inst 2')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Inst 3')).toBeInTheDocument();
+
+      const delEduTwoBtn = within(eduInstTwo.closest('fieldset')).getByRole(
+        'button',
+        { name: 'Delete education' }
+      );
+      fireEvent.click(delEduTwoBtn);
+      const updatedEduInstTwo = screen.queryByDisplayValue('Inst 2');
+      expect(screen.getByDisplayValue('Inst 1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Inst 3')).toBeInTheDocument();
+      expect(updatedEduInstTwo).not.toBeInTheDocument();
     });
   });
 

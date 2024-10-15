@@ -36,10 +36,12 @@ describe('Testing the Skills component', () => {
 
       const addSkillsBtn = screen.getByRole('button', { name: /\+ Skill/i });
       const skillOneInput = screen.getByPlaceholderText('Skill 1');
+      const skillOneDelBtn = screen.getByRole('button', { name: 'Delete' });
 
       expect(addSkillsBtn).toBeInTheDocument();
       expect(skillOneInput).toBeInTheDocument();
       expect(skillOneInput.value).toBe('');
+      expect(skillOneDelBtn).toBeInTheDocument();
     });
 
     test('Form displays a unique input for each data element (array item) passed to the component', () => {
@@ -105,33 +107,50 @@ describe('Testing the Skills component', () => {
       expect(skillOneInput.value).toBe('Python');
     });
 
-    describe('Testing form validation', () => {
-      test('Shows error message when input is required, has no input value, and is blurred', () => {
-        render(<MockParentComponent data={mockEmptyData} />);
+    test('Clicking delete skill button deletes the correct skill', () => {
+      render(<MockParentComponent data={mockData} />);
 
-        const skillInput = screen.getByPlaceholderText('Skill 1');
+      const skillInputs = screen.getAllByLabelText(/Skill \d/i);
 
-        fireEvent.blur(skillInput);
+      const skillTwoDelBtn = within(
+        skillInputs[1].closest('.skill-container')
+      ).getByRole('button', { name: 'Delete' });
 
-        expect(screen.getByText('A skill is required.')).toBeInTheDocument();
-      });
+      fireEvent.click(skillTwoDelBtn);
 
-      test('Error states are unique to each instance of a skill input', () => {
-        render(<MockParentComponent data={mockEmptyData} />);
+      const updatedSkillTwo = screen.queryByDisplayValue('CSS');
+      expect(screen.getByDisplayValue('HTML')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('JavaScript')).toBeInTheDocument();
+      expect(updatedSkillTwo).not.toBeInTheDocument();
+    });
+  });
 
-        const addSkillsBtn = screen.getByRole('button', { name: /\+ Skill/i });
-        fireEvent.click(addSkillsBtn);
+  describe('Testing form validation', () => {
+    test('Shows error message when input is required, has no input value, and is blurred', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
 
-        const skillOneInput = screen.getByPlaceholderText('Skill 1');
-        const skillTwoInput = screen.getByPlaceholderText('Skill 2');
-        const skillOneLabel = skillOneInput.closest('label');
-        const skillTwoLabel = skillTwoInput.closest('label');
+      const skillInput = screen.getByPlaceholderText('Skill 1');
 
-        fireEvent.blur(skillOneInput);
-        const error = screen.getByText('A skill is required.');
-        expect(skillOneLabel.contains(error)).toBe(true);
-        expect(skillTwoLabel.contains(error)).toBe(false);
-      });
+      fireEvent.blur(skillInput);
+
+      expect(screen.getByText('A skill is required.')).toBeInTheDocument();
+    });
+
+    test('Error states are unique to each instance of a skill input', () => {
+      render(<MockParentComponent data={mockEmptyData} />);
+
+      const addSkillsBtn = screen.getByRole('button', { name: /\+ Skill/i });
+      fireEvent.click(addSkillsBtn);
+
+      const skillOneInput = screen.getByPlaceholderText('Skill 1');
+      const skillTwoInput = screen.getByPlaceholderText('Skill 2');
+      const skillOneLabel = skillOneInput.closest('label');
+      const skillTwoLabel = skillTwoInput.closest('label');
+
+      fireEvent.blur(skillOneInput);
+      const error = screen.getByText('A skill is required.');
+      expect(skillOneLabel.contains(error)).toBe(true);
+      expect(skillTwoLabel.contains(error)).toBe(false);
     });
   });
 });

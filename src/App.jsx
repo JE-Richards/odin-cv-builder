@@ -3,7 +3,7 @@ import Editor from './assets/components/editor/Editor.jsx';
 import { useState } from 'react';
 
 function App() {
-  const [formData, setFormData] = useState({
+  const emptyData = {
     personalSummary: {
       firstName: '',
       lastName: '',
@@ -35,7 +35,11 @@ function App() {
     ],
     skills: [''],
     interests: [''],
-  });
+  };
+
+  const [formData, setFormData] = useState(emptyData);
+
+  const clearForms = () => setFormData(emptyData);
 
   const formDetails = {
     editor: {
@@ -137,6 +141,7 @@ function App() {
   };
 
   const handleChangesFns = {
+    clearForms: clearForms,
     personalSummaryChanges: handlePersonalSummaryChanges,
     contactDetailsChanges: handleContactDetailsChanges,
     experienceChanges: handleExperienceChanges,

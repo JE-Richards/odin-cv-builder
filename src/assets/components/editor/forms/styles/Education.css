@@ -1,13 +1,21 @@
 @media (min-width: 900px) {
   .fieldset--education {
     display: grid;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: repeat(4, auto);
     grid-template-columns: repeat(2, 1fr);
     gap: 1em;
   }
 
-  .fieldset--education > .form__label:nth-child(2),
-  .fieldset--education > .form__label:nth-child(3) {
+  .form__btn-container {
+    grid-column: span 2;
+  }
+
+  .form__btn--delete-education {
+    margin-bottom: 0;
+  }
+
+  .form__label--institute,
+  .form__label--qualification {
     grid-column: span 2;
   }
 }
