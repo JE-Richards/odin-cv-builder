@@ -93,9 +93,10 @@ jest.mock(
 );
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  jest.spyOn(window.localStorage.__proto__, 'getItem');
+  jest.spyOn(window.localStorage.__proto__, 'setItem');
 
-  render(<App />);
+  jest.clearAllMocks();
 });
 
 afterEach(cleanup);
@@ -103,10 +104,13 @@ afterEach(cleanup);
 describe('Testing App component', () => {
   describe('Testing initial render', () => {
     test('App renders without crashing', () => {
+      render(<App />);
       expect(screen.getByText(/CV Builder/)).toBeInTheDocument();
     });
 
     test('Initial state is set correctly', () => {
+      render(<App />);
+
       // Check that the initial values are rendered correctly
       expect(screen.getByText(/First name:/)).toHaveTextContent('First name:');
       expect(screen.getByText(/Email:/)).toHaveTextContent('Email:');
@@ -119,6 +123,8 @@ describe('Testing App component', () => {
 
   describe('Testing state changes', () => {
     test('handleChanges functions correctly update state values', () => {
+      render(<App />);
+
       // Test handlePersonalSummaryChanges
       const personalSummaryBtn = screen.getByRole('button', {
         name: /Update Personal Summary/,
@@ -176,6 +182,97 @@ describe('Testing App component', () => {
       expect(educationText).toHaveTextContent('Institute:');
       expect(skillsText).toHaveTextContent('Skills:');
       expect(interestsText).toHaveTextContent('Interests:');
+    });
+  });
+
+  describe('Testing local storage implementation', () => {
+    const mockPopulatedData = JSON.stringify({
+      personalSummary: {
+        firstName: 'Person',
+        lastName: '',
+        profession: '',
+        professionalSummary: '',
+      },
+      contactDetails: {
+        email: 'email@email.com',
+        mobile: '',
+        linkedIn: '',
+        portfolio: '',
+      },
+      experience: [
+        {
+          company: 'The Company',
+          role: '',
+          dateFrom: '',
+          dateTo: '',
+          responsibilities: [''],
+        },
+      ],
+      education: [
+        {
+          institute: 'The Institute',
+          qualification: '',
+          dateFrom: '',
+          dateTo: '',
+        },
+      ],
+      skills: ['Robotics'],
+      interests: ['Sleeping'],
+    });
+
+    test('Testing initial load from storage when storage is empty', () => {
+      window.localStorage.getItem.mockReturnValueOnce(null);
+      render(<App />);
+
+      expect(screen.getByText(/First name:/)).toHaveTextContent('First name:');
+      expect(screen.getByText(/Email:/)).toHaveTextContent('Email:');
+      expect(screen.getByText(/Company:/)).toHaveTextContent('Company:');
+      expect(screen.getByText(/Institute:/)).toHaveTextContent('Institute:');
+      expect(screen.getByText(/Skills:/)).toHaveTextContent('Skills:');
+      expect(screen.getByText(/Interests:/)).toHaveTextContent('Interests:');
+    });
+
+    test('Testing intitial load from storage when storage is populated', () => {
+      window.localStorage.getItem.mockReturnValueOnce(mockPopulatedData);
+      render(<App />);
+
+      expect(screen.getByText(/First name:/)).toHaveTextContent(
+        'First name: Person'
+      );
+      expect(screen.getByText(/Email:/)).toHaveTextContent(
+        'Email: email@email.com'
+      );
+      expect(screen.getByText(/Company:/)).toHaveTextContent(
+        'Company: The Company'
+      );
+      expect(screen.getByText(/Institute:/)).toHaveTextContent(
+        'Institute: The Institute'
+      );
+      expect(screen.getByText(/Skills:/)).toHaveTextContent('Skills: Robotics');
+      expect(screen.getByText(/Interests:/)).toHaveTextContent(
+        'Interests: Sleeping'
+      );
+    });
+
+    test('Saves form data to local storage on change with debounce', async () => {
+      jest.useFakeTimers();
+      window.localStorage.getItem.mockReturnValueOnce(null);
+      render(<App />);
+
+      const personalSummaryBtn = screen.getByRole('button', {
+        name: /Update Personal Summary/,
+      });
+      fireEvent.click(personalSummaryBtn);
+
+      // Fast-forward time to account for debounce delay
+      jest.advanceTimersByTime(500);
+
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'cvData',
+        expect.stringContaining('"firstName":"Test"')
+      );
+
+      jest.useRealTimers();
     });
   });
 });

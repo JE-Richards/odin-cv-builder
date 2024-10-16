@@ -1,6 +1,7 @@
 import './styles/App.css';
 import Editor from './assets/components/editor/Editor.jsx';
 import { useState } from 'react';
+import { debounce, update } from 'lodash';
 
 function App() {
   const emptyData = {
@@ -37,9 +38,14 @@ function App() {
     interests: [''],
   };
 
-  const [formData, setFormData] = useState(emptyData);
+  const savedData = JSON.parse(localStorage.getItem('cvData')) || emptyData;
 
-  const clearForms = () => setFormData(emptyData);
+  const [formData, setFormData] = useState(savedData);
+
+  const clearForms = () => {
+    setFormData(emptyData);
+    saveToLocalStorage(emptyData);
+  };
 
   const formDetails = {
     editor: {
@@ -92,52 +98,82 @@ function App() {
     },
   };
 
+  // Use debounce to delay saving for 500ms
+  const saveToLocalStorage = debounce((data) => {
+    localStorage.setItem('cvData', JSON.stringify(data));
+  }, 500);
+
   const handlePersonalSummaryChanges = (changes) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      personalSummary: {
-        ...prevFormData.personalSummary,
-        ...changes,
-      },
-    }));
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        personalSummary: {
+          ...prevFormData.personalSummary,
+          ...changes,
+        },
+      };
+
+      saveToLocalStorage(updatedFormData);
+      return updatedFormData;
+    });
   };
 
   const handleContactDetailsChanges = (changes) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      contactDetails: {
-        ...prevFormData.contactDetails,
-        ...changes,
-      },
-    }));
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        contactDetails: {
+          ...prevFormData.contactDetails,
+          ...changes,
+        },
+      };
+      saveToLocalStorage(updatedFormData);
+      return updatedFormData;
+    });
   };
 
   const handleExperienceChanges = (updatedExperience) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      experience: updatedExperience,
-    }));
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        experience: updatedExperience,
+      };
+      saveToLocalStorage(updatedFormData);
+      return updatedFormData;
+    });
   };
 
   const handleEducationChanges = (updatedEducation) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      education: updatedEducation,
-    }));
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        education: updatedEducation,
+      };
+      saveToLocalStorage(updatedFormData);
+      return updatedFormData;
+    });
   };
 
   const handleSkillsChanges = (updatedSkills) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      skills: updatedSkills,
-    }));
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        skills: updatedSkills,
+      };
+      saveToLocalStorage(updatedFormData);
+      return updatedFormData;
+    });
   };
 
   const handleInterestsChanges = (updatedInterests) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      interests: updatedInterests,
-    }));
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        interests: updatedInterests,
+      };
+      saveToLocalStorage(updatedFormData);
+      return updatedFormData;
+    });
   };
 
   const handleChangesFns = {
