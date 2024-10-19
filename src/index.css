@@ -1,6 +1,4 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
@@ -21,6 +19,11 @@
   --form-btn-background-col: var(--text-col);
   --form-btn-text-col: var(--background-col);
   --form-error-col: rgb(247, 80, 80);
+
+  --preview-background-col: rgb(255, 255, 255);
+  --preview-font-col: rgb(0, 0, 0);
+  --preview-main-accent-col: rgb(91, 3, 99);
+  --preview-alt-accent-col: rgb(5, 70, 114);
 }
 
 *,
