@@ -12,6 +12,14 @@
 
   --background-col: rgb(36, 36, 36);
   --text-col: rgba(255, 255, 255, 0.87);
+
+  --header-background-col: rgb(20, 20, 20);
+
+  --link-col: rgb(198, 22, 214);
+  --link-col-hover: rgb(162, 21, 175);
+  --link-col-active: rgb(160, 52, 170);
+  --link-col-visited: rgb(129, 17, 139);
+
   --form-background-col: rgb(75, 75, 75);
   --form-border-col: rgb(59, 59, 59);
   --form-input-background-col: var(--form-border-col);
