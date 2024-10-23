@@ -181,7 +181,7 @@ describe('Testing the PersonalSummary component', () => {
       fireEvent.change(firstNameInput, { target: { value: '@' } });
       expect(
         screen.getByText(
-          'First name can only contain letters, hyphens, and apostrophes.'
+          'First name can only contain letters, hyphens, apostrophes, and spaces.'
         )
       ).toBeInTheDocument();
       expect(firstNameInput.value).toBe('');
@@ -189,7 +189,7 @@ describe('Testing the PersonalSummary component', () => {
       fireEvent.change(lastNameInput, { target: { value: '@' } });
       expect(
         screen.getByText(
-          'Last name can only contain letters, hyphens, and apostrophes.'
+          'Last name can only contain letters, hyphens, apostrophes, and spaces.'
         )
       ).toBeInTheDocument();
       expect(lastNameInput.value).toBe('');
@@ -197,7 +197,7 @@ describe('Testing the PersonalSummary component', () => {
       fireEvent.change(professionInput, { target: { value: '@' } });
       expect(
         screen.getByText(
-          'Profession can only contain letters, hyphens, and apostrophes.'
+          'Profession can only contain letters, hyphens, apostrophes, and spaces.'
         )
       ).toBeInTheDocument();
       expect(professionInput.value).toBe('');

@@ -33,6 +33,7 @@ function App() {
 
   const modalConfirm = () => {
     setFormData(exampleData);
+    saveToLocalStorage(exampleData);
     setModalOpen(false);
   };
 
@@ -66,21 +67,32 @@ function App() {
     },
     experience: {
       title: '3. Professional Experience',
-      description: [
-        'This is where you can showcase your professional experience and accomplishments to help demonstrate what you could contribute to your potential employer.',
-        <br />,
-        "Don't forget to include a brief description of your duties and accomplishments in the responsibility section. This helps employers understand the scope of your responsibilities and the impact it had.",
-      ],
+      description: (
+        <>
+          This is where you can showcase your professional experience and
+          accomplishments to help demonstrate what you could contribute to your
+          potential employer.
+          <br />
+          Don't forget to include a brief description of your duties and
+          accomplishments in the responsibility section. This helps employers
+          understand the scope of your responsibilities and the impact it had.
+        </>
+      ),
     },
     education: {
       title: '4. Education History',
-      description: [
-        'Your education history demonstrates your existing qualifications in addition to your commitment to learning and willingess to acquire new skills.',
-        <br />,
-        'If you have multiple qualifications, list them in reverse chronological order with the most recent qualification listed first.',
-        <br />,
-        "If you don't have any formal education, include any relevant certficates or training you may have received.",
-      ],
+      description: (
+        <>
+          Your education history demonstrates your existing qualifications in
+          addition to your commitment to learning and willingess to acquire new
+          skills.
+          <br /> If you have multiple qualifications, list them in reverse
+          chronological order with the most recent qualification listed first.
+          <br />
+          If you don't have any formal education, include any relevant
+          certficates or training you may have received.
+        </>
+      ),
     },
     skills: {
       title: '5. Skills',
@@ -89,13 +101,18 @@ function App() {
     },
     interests: {
       title: '6. Hobbies & Interests',
-      description: [
-        'Your hobbies and interests can give employers a better sense of who you are and what motivates you.',
-        <br />,
-        'Make sure to list hobbies and interests that are ',
-        <strong>relevant</strong>,
-        " to the job you're applying for, and that highlight your personality, skills, and values. For example, if you're applying for a job in tech, you might consider including interests such as AI or cybersecurity.",
-      ],
+      description: (
+        <>
+          Your hobbies and interests can give employers a better sense of who
+          you are and what motivates you.
+          <br />
+          Make sure to list hobbies and interests that are{' '}
+          <strong>relevant</strong> to the job you're applying for, and that
+          highlight your personality, skills, and values. For example, if you're
+          applying for a job in tech, you might consider including interests
+          such as AI or cybersecurity.
+        </>
+      ),
     },
   };
 

@@ -19,21 +19,21 @@ export default function PersonalSummary(props) {
     switch (name) {
       case 'firstName':
         // Further validation prevents invalid characters, but keep error in as a failsafe
-        if (!/^[a-zA-z'-]*$/.test(value) && value !== '')
+        if (!/^[a-zA-z' -]*$/.test(value) && value !== '')
           error =
-            'First name can only contain letters, hyphens, and apostrophes.';
+            'First name can only contain letters, hyphens, apostrophes, and spaces.';
         else if (!value.trim()) error = 'First name is required.';
         break;
       case 'lastName':
-        if (!/^[a-zA-z'-]*$/.test(value) && value !== '')
+        if (!/^[a-zA-z' -]*$/.test(value) && value !== '')
           error =
-            'Last name can only contain letters, hyphens, and apostraphes.';
+            'Last name can only contain letters, hyphens, apostraphes, and spaces.';
         else if (!value.trim()) error = 'Last name is required.';
         break;
       case 'profession':
-        if (!/^[a-zA-z'-]*$/.test(value) && value !== '')
+        if (!/^[a-zA-z' -]*$/.test(value) && value !== '')
           error =
-            'Profession can only contain letters, hyphens, and apostraphes.';
+            'Profession can only contain letters, hyphens, apostraphes, and spaces.';
         else if (!value.trim()) error = 'Profession is required.';
         break;
       case 'professionalSummary':
@@ -66,7 +66,7 @@ export default function PersonalSummary(props) {
       if (!regex.test(value) && value !== '') {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          [name]: `${errNames[name]} can only contain letters, hyphens, and apostrophes.`,
+          [name]: `${errNames[name]} can only contain letters, hyphens, apostrophes, and spaces.`,
         }));
         return; // Prevent invalid input
       } else {

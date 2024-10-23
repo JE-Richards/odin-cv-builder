@@ -30,7 +30,7 @@ export default function ContactDetails(props) {
         } else if (!value.trim()) error = 'Email is required.';
         break;
       case 'mobile':
-        if (!/^\d{10, 11}$/.test(value) && value !== '') {
+        if (!/^\d{10,11}$/.test(value) && value !== '') {
           error = 'Please enter a valid 10 or 11 digit UK mobile number.';
         } else if (!value.trim()) error = 'Mobile number is required.';
         break;
