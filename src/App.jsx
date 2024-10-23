@@ -1,46 +1,47 @@
 import './styles/App.css';
 import Editor from './assets/components/editor/Editor.jsx';
+import Header from './assets/components/header/Header.jsx';
+import Preview from './assets/components/preview/Preview.jsx';
+import Modal from './assets/components/modal/Modal.jsx';
+import exportPDF from './util/exportPDF.jsx';
+import { emptyData, exampleData } from './assets/data/data.js';
 import { useState } from 'react';
-import { debounce, update } from 'lodash';
+import { debounce } from 'lodash';
 
 function App() {
-  const emptyData = {
-    personalSummary: {
-      firstName: '',
-      lastName: '',
-      profession: '',
-      professionalSummary: '',
-    },
-    contactDetails: {
-      email: '',
-      mobile: '',
-      linkedIn: '',
-      portfolio: '',
-    },
-    experience: [
-      {
-        company: '',
-        role: '',
-        dateFrom: '',
-        dateTo: '',
-        responsibilities: [''],
-      },
-    ],
-    education: [
-      {
-        institute: '',
-        qualification: '',
-        dateFrom: '',
-        dateTo: '',
-      },
-    ],
-    skills: [''],
-    interests: [''],
-  };
-
   const savedData = JSON.parse(localStorage.getItem('cvData')) || emptyData;
 
   const [formData, setFormData] = useState(savedData);
+  const [previewMode, setPreviewMode] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const loadExample = () => {
+    setModalOpen(true);
+  };
+
+  const loadPreview = () => {
+    setPreviewMode(true);
+  };
+
+  const loadEditor = () => {
+    setPreviewMode(false);
+  };
+
+  const handleExport = () => {
+    exportPDF('.preview');
+  };
+
+  const modalConfirm = () => {
+    setFormData(exampleData);
+    setModalOpen(false);
+  };
+
+  const modalDecline = () => {
+    setModalOpen(false);
+  };
+
+  const modalMessage =
+    'Are you sure you want to load the example CV? Doing so will erase any data you have input and it cannot be undone.';
 
   const clearForms = () => {
     setFormData(emptyData);
@@ -49,7 +50,7 @@ function App() {
 
   const formDetails = {
     editor: {
-      title: 'CV Builder',
+      title: 'CV Editor',
       description:
         'This app lets you create a simple one-page CV. Fill out each of the forms below to populate the CV.',
     },
@@ -186,14 +187,32 @@ function App() {
     interestsChanges: handleInterestsChanges,
   };
 
+  const headerFuncs = {
+    loadExample: loadExample,
+    loadPreview: loadPreview,
+    loadEditor: loadEditor,
+    exportPDF: handleExport,
+  };
+
   return (
     <>
+      <Header funcs={headerFuncs} isPreviewMode={previewMode} />
+      <Modal
+        isOpen={modalOpen}
+        onConfirm={modalConfirm}
+        onClose={modalDecline}
+        message={modalMessage}
+      />
       <div className="container">
-        <Editor
-          formData={formData}
-          formDetails={formDetails}
-          handleChanges={handleChangesFns}
-        />
+        {previewMode ? (
+          <Preview cvData={formData} />
+        ) : (
+          <Editor
+            formData={formData}
+            formDetails={formDetails}
+            handleChanges={handleChangesFns}
+          />
+        )}
       </div>
     </>
   );

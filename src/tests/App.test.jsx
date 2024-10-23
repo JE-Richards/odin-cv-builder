@@ -1,15 +1,9 @@
 import App from '../App.jsx';
 import '@testing-library/jest-dom';
-import {
-  render,
-  screen,
-  fireEvent,
-  cleanup,
-  within,
-} from '@testing-library/react';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { useState } from 'react';
 
-// Mock of Editor component to test App independently of other components
+// Mock of each component to test App independently of them
 jest.mock(
   '../assets/components/editor/Editor.jsx',
   () =>
@@ -92,6 +86,63 @@ jest.mock(
     }
 );
 
+jest.mock(
+  '../assets/components/header/Header.jsx',
+  () =>
+    ({ funcs, isPreviewMode }) => {
+      return (
+        <div>
+          <button type="button" onClick={() => funcs.loadExample()}>
+            Load example
+          </button>
+          <button type="button" onClick={() => funcs.loadPreview()}>
+            Load preview
+          </button>
+          <button type="button" onClick={() => funcs.loadEditor()}>
+            Load editor
+          </button>
+          <button type="button" onClick={() => funcs.exportPDF()}>
+            Export pdf
+          </button>
+        </div>
+      );
+    }
+);
+
+jest.mock('../assets/components/preview/Preview.jsx', () => ({ cvData }) => {
+  return (
+    <div>
+      <p>Test preview</p>
+    </div>
+  );
+});
+
+jest.mock(
+  '../assets/components/modal/Modal.jsx',
+  () =>
+    ({ isOpen, onConfirm, onClose, message }) => {
+      return (
+        <>
+          {isOpen && (
+            <div>
+              <p>Modal open test</p>
+              <button type="button" onClick={onClose}>
+                Close
+              </button>
+            </div>
+          )}
+        </>
+      );
+    }
+);
+
+jest.mock(
+  '../util/exportPDF.jsx',
+  () =>
+    ({ elementClass }) =>
+      jest.fn()
+);
+
 beforeEach(() => {
   jest.spyOn(window.localStorage.__proto__, 'getItem');
   jest.spyOn(window.localStorage.__proto__, 'setItem');
@@ -105,11 +156,17 @@ describe('Testing App component', () => {
   describe('Testing initial render', () => {
     test('App renders without crashing', () => {
       render(<App />);
-      expect(screen.getByText(/CV Builder/)).toBeInTheDocument();
+      expect(screen.getByText('CV Editor')).toBeInTheDocument();
     });
 
     test('Initial state is set correctly', () => {
       render(<App />);
+
+      // Check header gets rendered
+      expect(screen.getByText(/Load example/)).toBeInTheDocument();
+      expect(screen.getByText(/Load preview/)).toBeInTheDocument();
+      expect(screen.getByText(/Load editor/)).toBeInTheDocument();
+      expect(screen.getByText(/Export pdf/)).toBeInTheDocument();
 
       // Check that the initial values are rendered correctly
       expect(screen.getByText(/First name:/)).toHaveTextContent('First name:');
@@ -122,7 +179,7 @@ describe('Testing App component', () => {
   });
 
   describe('Testing state changes', () => {
-    test('handleChanges functions correctly update state values', () => {
+    test('handleChanges functions correctly update formData state', () => {
       render(<App />);
 
       // Test handlePersonalSummaryChanges
@@ -182,6 +239,44 @@ describe('Testing App component', () => {
       expect(educationText).toHaveTextContent('Institute:');
       expect(skillsText).toHaveTextContent('Skills:');
       expect(interestsText).toHaveTextContent('Interests:');
+    });
+
+    test('Display swaps between editor and preview as previewMode state changes', () => {
+      render(<App />);
+
+      const loadPreviewBtn = screen.getByRole('button', {
+        name: 'Load preview',
+      });
+      const loadEditorBtn = screen.getByRole('button', { name: 'Load editor' });
+
+      expect(screen.getByText(/First name:/)).toBeInTheDocument();
+
+      fireEvent.click(loadPreviewBtn);
+
+      expect(screen.getByText(/Test preview/)).toBeInTheDocument();
+
+      fireEvent.click(loadEditorBtn);
+
+      expect(screen.getByText(/First name:/)).toBeInTheDocument();
+    });
+
+    test('Modal renders when modalOpen state changes', () => {
+      render(<App />);
+
+      const loadExampleBtn = screen.getByRole('button', {
+        name: 'Load example',
+      });
+
+      expect(screen.queryByText('Modal open test')).not.toBeInTheDocument();
+
+      fireEvent.click(loadExampleBtn);
+
+      expect(screen.queryByText('Modal open test')).toBeInTheDocument();
+      const closeModalBtn = screen.getByRole('button', { name: 'Close' });
+
+      fireEvent.click(closeModalBtn);
+
+      expect(screen.queryByText('Modal open test')).not.toBeInTheDocument();
     });
   });
 

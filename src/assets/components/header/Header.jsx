@@ -38,13 +38,15 @@ export default function Header(props) {
           <button type="button" className="header__btn" onClick={toggleView}>
             {isPreviewMode ? 'View editor' : 'View preview'}
           </button>
-          <button
-            type="button"
-            className="header__btn header__btn--alt"
-            onClick={exportPDF}
-          >
-            Export PDF
-          </button>
+          {isPreviewMode && (
+            <button
+              type="button"
+              className="header__btn header__btn--alt"
+              onClick={exportPDF}
+            >
+              Export PDF
+            </button>
+          )}
         </div>
       </div>
     </header>
